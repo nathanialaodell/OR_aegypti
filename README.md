@@ -117,6 +117,11 @@ part 3 prior to part 2 is a naming artifact and nothing more).
 `8_Minimum spanning (obfuscated).R` - Calculate F_{ST} between groups to acquire the null and alternative genetic graphs. There is one quirk to this script that needs mentioning: there are 3 address typos in 
 the `~/Objects/kinship/Oregon_ALL_2026_GP.gen` file that required a copy of `~/Objects/Talent connectivity NA omitted.shp` to be made that matched the typos.
 
+| File name | Description? | 
+| --------- | ------------ | 
+| Talent sum table part 2 (genomic centrality).RDS | Chunk 2 to create **S. table 2**|
+| Ashland sum table part 2 (genomic centrality).RDS | Chunk 2 to create **S. table 3**|
+
 `9_Relatedness.R (obfuscated)` - Get a quick distribution of relatedness between individuals.
 
 `10_descriptive table big big (obfuscated).R` - Combine all three parts for *S. table 2 & 3* creation and analyze (pearson) correlations across and within graph-type centrality measures. 
