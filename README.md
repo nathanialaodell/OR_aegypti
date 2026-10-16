@@ -1,10 +1,7 @@
 # OR_aegypti
-Code repository for network analyses in to-be-named OR aegypti invasion manuscript
+This repository contains all code in order to reproduce the figures for the network analyses portion of "Synthesizing genetic and network methodologies to characterize invasion dynamics of Aedes aegypti" (In preparation) and its supplementary materials.
 
-## Summary
 Code in this repository has been tested up to R v4.6.0 (2026-04-24).
-
-
 
 ## Directories setup
 The code in this repository has been generalized to search for all data in a folder 
@@ -135,8 +132,8 @@ the `~/Objects/kinship/Oregon_ALL_2026_GP.gen` file that required a copy of `~/O
 | `8_Minimum spanning.R` | **Figure 4** |
 | `11_Triads.R` | **Figure 5** |
 | `1_Time ordered networks.R` | **S. figure 5** |
-| `9_Relatedness.R` | **S. figure 6** |
-| `6_Hotspots.R` | **S. figure 7** |
+| `6_Hotspots.R` | **S. figure 6** |
+| `9_Relatedness.R` | **S. figure 7** |
 | `10_descriptive table big big (obfuscated).R` | **S. figure 8** |
 | NA (conceptual framework) | **Table 1** |
 | `7_Dispersal kernels.R` | **Table 2** |
