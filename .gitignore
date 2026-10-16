@@ -47,3 +47,9 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+Objects/
+rosm.cache/
+10_Descriptive table big big.R
+8_Minimum spanning.R
+9_Relatedness.R
