@@ -5,7 +5,7 @@ Code in this repository has been tested up to R v4.6.0 (2026-04-24).
 
 ## Directories setup
 The code in this repository has been generalized to search for all data in a folder 
-titled "~/Objects" for spatial network data and "~/Objects/kinship" in the parent directory. 
+titled `~/Objects` for spatial network data and `~/Objects/kinship` in the parent directory. 
 
 ## Script descriptions
 
