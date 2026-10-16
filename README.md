@@ -8,11 +8,30 @@ Code in this repository has been tested up to R v4.6.0 (2026-04-24).
 
 ## Directories setup
 The code in this repository has been generalized to search for all data in a folder 
-titled "~/Objects"--for spatial network data--and "~/Objects/kinship"--in the parent directory. 
+titled "~/Objects" for spatial network data and "~/Objects/kinship" in the parent directory. 
 
 ## Script descriptions
 
 ### Function sources
+
+`From_to_functions.R` - Source script to turn a trap collection dataset into a dataframe with "from" and "to" columns to facilitate graph creation using `igraph`.
+
+| Function name | Purpose | 
+| ------------- | ------- |
+| `nn.fun(x,y,z)` | Split data frame into sites that are origin (from) sites and destination sites and get their nearest neighbor to calculate Euclidean distance | 
+| `new.fun(from, to, x, y)` | Merge from and to datasets into one with connections | 
+| `gene_dist(data)` | Get the Euclidean distance for connections in a kinship dataset | 
+
+`Creating_networks.R` - Source script to create and plot networks. 
+
+| Function name | Purpose | 
+| ------------- | ------- |
+| `graph_wk_fun(data, wk)` | Create a directed graph from a data frame, filtered to a specific week (this is a roundabout way to create a temporal network) | 
+| `get_nearest_neighbors(data, wk)` | Get the nearest neighbor for each site with a collection in a given week (used to create red, dashed lines in **S. figure 5**|
+| `graph_wk_with_nn_fun(data, wk)` | Combination of the previous two functions | 
+| `pn_nn_fun(data, graph, full_graph, title)` | Plot a nearest neighbor graph. The `data` argument is used to create a layout so that nodes are plotted according to their geocoordinates | 
+| `pn_fun(data, graph, title, kin_legend, spat_legend, lab, temp)` | Plot a kinship or spatial graph | 
+| `graph_wk_it_fun(data, wk)` | Create a single, static, weighted (by Euclidean distance) and directed graph |
 
 ### Analysis scripts
 
@@ -42,23 +61,48 @@ static and time-ordered networks for Talent and Ashland, Oregon,
 
 | File name | Description? | 
 | --------- | ------------ | 
-| Talent sum table part 1 (spatial centrality).RDS | Chunk 1 to create **S. table 2**|
 | Ashland sum table part 1 (spatial centrality).RDS | Chunk 1 to create **S. table 3**|
 
 `3_Var_Extract.R` - Extract variables that could have been extracted at the time of analysis. Because the PRISM R package did not have the 
 ability to pull data at 800 m resolution in early 2025, a separate perl script must be run (see the PRISM folder in this repo for instructions).
 Note that this is no longer the case, so, alternatively, you could just extract the same weather variables using `prism::get_prism_dailys()`.
 
+*Written objects:*
+
+| File name | Description? | 
+| --------- | ------------ | 
+|Talent with climate.rds | Temperature max, mean; mean dew point; precipitation for dates with *Aedes aegypti* collections|
+| Talent with landcover.rds | Landcover data for Talent (ultimately not used in analysis) | 
+| Talent with roads.rds | Road density for Talent (ultimately not used in analysis) |
+| Talent NA with env.rds | All three above datasets merged | 
+| Talent with rel humidity.rds | Relative humidity for dates with *Aedes aegypti* collections |
+| Talent with wind bearing.rds | Wind bearing for collection dates (ultimately not used in analysis) | 
+| Ashland Clim attributes.rds | See above | 
+
+
 `3.1_Merging land and climate.R`- Merging environmental variables to Talent and Ashland, Oregon, trap collection datasets for the purposes of homophily.
 
+*Written objects:*
+
+| File name | Description? | 
+| --------- | ------------ | 
+| Objects/Talent attributes.rds | Merge all datasets from `3_Var_Extract.R` | 
+
 `4_Homophily.R` - Calculate environmental variable homophily for Talent and Ashland
-network nodes.
+network nodes. Homophily is calculated using a pearson coefficient for climate variables 
+(\alpha = 0.05).
 
 `5_Spread analysis plot.R` - NOT RUN. Used to help create Figure 3.
 
 `6_Hotspots.R` - Calculate outgoing contact chains and associated hotspot index
 for Talent, Oregon. Importantly, the plot calls will not show properly in the R 
 plot window. Save them to `.svg` files prior to viewing. 
+
+*Written objects:*
+
+| File name | Description? | 
+| --------- | ------------ | 
+| Talent sum table part 1 (spatial centrality).rds | Chunk 1 to create **S. table 2** |
 
 `7_Dispersal kernels.R` - Calculate dispersal kernels for close-kin dyads. 
 
@@ -73,7 +117,7 @@ Note that although the chunks to create *S.table 2 & 3* are created out of order
 the scripts used to create each chunk are independent of one another (i.e., creating
 part 3 prior to part 2 is a naming artifact and nothing more).
 
-`8_Minimum spanning (obfuscated).R` - There is one quirk to this script that needs mentioning: there are 3 address typos in 
+`8_Minimum spanning (obfuscated).R` - Calculate F_{ST} between groups to acquire the null and alternative genetic graphs. There is one quirk to this script that needs mentioning: there are 3 address typos in 
 the `~/Objects/kinship/Oregon_ALL_2026_GP.gen` file that required a copy of `~/Objects/Talent connectivity NA omitted.shp` to be made that matched the typos.
 
 `9_Relatedness.R (obfuscated)` - Get a quick distribution of relatedness between individuals.
@@ -93,10 +137,10 @@ the `~/Objects/kinship/Oregon_ALL_2026_GP.gen` file that required a copy of `~/O
 | `1_Time ordered networks.R` | **S. figure 5** |
 | `9_Relatedness.R` | **S. figure 6** |
 | `6_Hotspots.R` | **S. figure 7** |
-| `10_descriptive table big big (obfuscated).R | **S. figure 8** |
+| `10_descriptive table big big (obfuscated).R` | **S. figure 8** |
 | NA (conceptual framework) | **Table 1** |
 | `7_Dispersal kernels.R` | **Table 2** |
-| `1_Time ordered networks.R`; `7_Dispersal kernels.R`; `8_Minimum spanning (obfuscated).R` | **S. table 2** |
+| `6_Hotspots.R`; `7_Dispersal kernels.R`; `8_Minimum spanning (obfuscated).R` | **S. table 2** |
 | `1_Time ordered networks.R`; `7_Dispersal kernels.R`; `8_Minimum spanning (obfuscated).R` | **S. table 3** |
 | `10_descriptive table big big (obfuscated).R` | **S. table 4** |
 | `3_Homophily.R` | **S.table 5** |
