@@ -57,6 +57,8 @@ ash_attributes <- readRDS(here::here("Objects/Ashland Clim attributes.rds"))%>%
 
 # since we already have this object set up with From To connections,
 # it should be easy to do a pearson coefficient test
+
+# specify from and to sites (`x` and `y` in cor.test args)
 tal_m <- left_join(or_sf_cnct, attributes %>%
                       dplyr::rename(From = Site) %>%
                       dplyr::mutate(epi_wk = epi_wk + 1), by = c("From", "epi_wk"))
@@ -87,6 +89,7 @@ ash_m <- ash_m %>%
 
 cor.df <- rbind(ash_m, tal_m)
 
+# create vector attributes of interest
 names <- c(
   "Road Density",
   "Relative Humidity",
@@ -96,6 +99,7 @@ names <- c(
   "Precipitation (cm)"
 )
 
+# specify which columns are `x` and `y` for future for loop (see below)
 from_cols <- names(cor.df)[c(15:20)]
 to_cols   <- names(cor.df)[c(23:28)]
 
@@ -107,6 +111,8 @@ clean_names <- gsub("_From$", "", from_cols)
 
 # loop through column pairs
 for (i in seq_along(from_cols)) {
+  # correlate from and to site attributes for a given connection
+  # in the merged talent and ashland dataframe
   test <- cor.test(cor.df[[from_cols[i]]], cor.df[[to_cols[i]]])
   cor_values[i] <- test$estimate
   p_values[i] <- test$p.value
@@ -144,6 +150,7 @@ flextable(cor.df.2) %>%
                   ref_symbols = "**"
                 )
 
+# test Talent alone
 cor.test(tal_m$ppt_From, tal_m$ppt_To, method = "pearson")
 cor.test(tal_m$tdmean_From, tal_m$tdmean_To, method = "pearson")
 cor.test(tal_m$tmax_From, tal_m$tmax_To, method = "pearson")

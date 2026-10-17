@@ -25,13 +25,6 @@ pnw_love <- PNWColors::pnw_palette(name = "Sunset2",
                                    type = "continuous")
 pal <- setNames(pnw_love, urel)
 
-collect_triads <- function(vids, isoclass) {
-  if (isoclass == target_class) {
-    found_triplets <- c(found_triplets, list(vids))
-  }
-  return(FALSE) 
-}
-
 or_dat_f_c <- readRDS(here::here("Objects/Talent Trap Counts.rds")) %>%
   dplyr::select(Site, Date, epi_wk, Total)
 
@@ -58,8 +51,11 @@ ash_sf <- readRDS(here::here("Objects/kinship/ash full graph.RDS")) %>%
 
 #### TRIAD ANALYSIS #####
 ag1 <- igraph::graph_from_data_frame(ash_sf, directed = TRUE)
-pattern <- make_graph(edges = c(1,2,  2,3,  1,3), directed = TRUE)
-trio <- subgraph_isomorphisms(pattern, ag1, method = "vf2")
+
+# make a graph that has the pattern that we want to identify in ashland/talent
+# unweighted (we deal with that later)
+pattern <- make_graph(edges = c(1,2,  2,3,  1,3), directed = TRUE) # 1->2; 2 -> 3; 1 -> 3
+trio <- subgraph_isomorphisms(pattern, ag1, method = "vf2") # see ?igraph::subgraph_isomorphisms for `method` details
 
 target_030T <- do.call(rbind, lapply(trio, function(m) {
   node_names <- V(ag1)$name[m]
@@ -143,6 +139,7 @@ for (i in seq_len(n_triads)) {
 
 wrap_plots(p_list)
 
+# subset the graph indices in p_list that have the weight pattern we're looking for
 ABCs <- c(1,8,11,13:14, 16, 20, 21, 23)
 
 p_list <- list()
@@ -230,6 +227,7 @@ lo2 <- matrix(c(V(tg1_030T)$Long, V(tg1_030T)$Lat), ncol = 2) %>%
   na.omit()
 bbox <- st_bbox(or_sf_cnct)
 
+# not much there
 igraph::plot.igraph(
   tg1_030T,
   layout = lo2,

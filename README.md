@@ -42,7 +42,7 @@ titled `~/Objects` for spatial network data and `~/Objects/kinship` in the paren
 
 `1_Sweep.R` - Preprocessing of collection data for Ashland and Talent, Oregon.
 
-*Written objects:*
+\textbf{Written objects}:
 
 | File name | Description? | 
 | --------- | ------------ | 
@@ -52,9 +52,9 @@ titled `~/Objects` for spatial network data and `~/Objects/kinship` in the paren
 
 `2_Time ordered networks.R` - Creates and calculates centrality measures for 
 static and time-ordered networks for Talent and Ashland, Oregon, 
-**Aedes aegypti** collection data from 2024 and 2025, respectively.
+\textit{Aedes aegypti} collection data from 2024 and 2025, respectively.
 
-*Written objects:*
+\textbf{Written objects}:
 
 | File name | Description? | 
 | --------- | ------------ | 
@@ -64,22 +64,22 @@ static and time-ordered networks for Talent and Ashland, Oregon,
 ability to pull data at 800 m resolution in early 2025, a separate perl script must be run (see the PRISM folder in this repo for instructions).
 Note that this is no longer the case, so, alternatively, you could just extract the same weather variables using `prism::get_prism_dailys()`.
 
-*Written objects:*
+\textbf{Written objects}:
 
 | File name | Description? | 
 | --------- | ------------ | 
-|Talent with climate.rds | Temperature max, mean; mean dew point; precipitation for dates with *Aedes aegypti* collections|
+|Talent with climate.rds | Temperature max, mean; mean dew point; precipitation for dates with \textit{Aedes aegypti} collections|
 | Talent with landcover.rds | Landcover data for Talent (ultimately not used in analysis) | 
 | Talent with roads.rds | Road density for Talent (ultimately not used in analysis) |
 | Talent NA with env.rds | All three above datasets merged | 
-| Talent with rel humidity.rds | Relative humidity for dates with *Aedes aegypti* collections |
+| Talent with rel humidity.rds | Relative humidity for dates with \textit{Aedes aegypti} collections |
 | Talent with wind bearing.rds | Wind bearing for collection dates (ultimately not used in analysis) | 
 | Ashland Clim attributes.rds | See above | 
 
 
 `3.1_Merging land and climate.R`- Merging environmental variables to Talent and Ashland, Oregon, trap collection datasets for the purposes of homophily.
 
-*Written objects:*
+\textbf{Written objects}:
 
 | File name | Description? | 
 | --------- | ------------ | 
@@ -87,7 +87,7 @@ Note that this is no longer the case, so, alternatively, you could just extract 
 
 `4_Homophily.R` - Calculate environmental variable homophily for Talent and Ashland
 network nodes. Homophily is calculated using a pearson coefficient for climate variables 
-(\alpha = 0.05).
+($\alpha = 0.05$).
 
 `5_Spread analysis plot.R` - NOT RUN. Used to help create Figure 3.
 
@@ -95,42 +95,42 @@ network nodes. Homophily is calculated using a pearson coefficient for climate v
 for Talent, Oregon. Importantly, the plot calls will not show properly in the R 
 plot window. Save them to `.svg` files prior to viewing. 
 
-*Written objects:*
+\textbf{Written objects}:
 
 | File name | Description? | 
 | --------- | ------------ | 
-| Talent sum table part 1 (spatial centrality).rds | Chunk 1 to create **S. table 2** |
+| Talent sum table part 1 (spatial centrality).rds | Chunk 1 to create \textbf{S. table 2} |
 
 `7_Dispersal kernels.R` - Calculate dispersal kernels for close-kin dyads. 
 
-*Written objects:*
+\textbf{Written objects}:
 
 | File name | Description? | 
 | --------- | ------------ | 
-| Talent sum table part 3 (dispersal).RDS | Chunk 3 to create **S. table 2**|
-| Ashland sum table part 3 (dispersal).RDS | Chunk 3 to create **S. table 3**|
+| Talent sum table part 3 (dispersal).RDS | Chunk 3 to create \textbf{S. table 2}|
+| Ashland sum table part 3 (dispersal).RDS | Chunk 3 to create \textbf{S. table 3}|
 
-Note that although the chunks to create *S.table 2 & 3* are created out of order, 
+Note that although the chunks to create \textbf{S.table 2 & 3} are created out of order, 
 the scripts used to create each chunk are independent of one another (i.e., creating
 part 3 prior to part 2 is a naming artifact and nothing more).
 
-`8_Minimum spanning (obfuscated).R` - Calculate F_{ST} between groups to acquire the null and alternative genetic graphs. There is one quirk to this script that needs mentioning: there are 3 address typos in 
+`8_Minimum spanning (obfuscated).R` - Calculate $F_{ST}$ between groups to acquire the null and alternative genetic graphs. There is one quirk to this script that needs mentioning: there are 3 address typos in 
 the `~/Objects/kinship/Oregon_ALL_2026_GP.gen` file that required a copy of `~/Objects/Talent connectivity NA omitted.shp` to be made that matched the typos.
 
 | File name | Description? | 
 | --------- | ------------ | 
-| Talent sum table part 2 (genomic centrality).RDS | Chunk 2 to create **S. table 2**|
-| Ashland sum table part 2 (genomic centrality).RDS | Chunk 2 to create **S. table 3**|
+| Talent sum table part 2 (genomic centrality).RDS | Chunk 2 to create \textbf{S. table 2}|
+| Ashland sum table part 2 (genomic centrality).RDS | Chunk 2 to create \texxtbf{S. table 3}|
 
 `9_Relatedness.R (obfuscated)` - Get a quick distribution of relatedness between individuals.
 
-`10_descriptive table big big (obfuscated).R` - Combine all three parts for *S. table 2 & 3* creation and analyze (pearson) correlations across and within graph-type centrality measures. 
+`10_descriptive table big big (obfuscated).R` - Combine all three parts for \textbf{S. table 2 & 3} creation and analyze (pearson) correlations across and within graph-type centrality measures. 
 
 `11_Triads.R` - Analyze the presence of triads within a gonotrophic cycle (~14 days).
 
 *Network figures and table outputs:*
 
-| Origin file | Figure name | 
+| Origin file | Figure | 
 | ----------- | ----------- |
 | `0_Study area map.R` | **Figure 1** |
 | `5_Hotspots.R` | **Figure 3** |

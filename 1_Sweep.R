@@ -20,7 +20,9 @@ source(here::here("From_to_functions.R"))
 #---------
 
 dat <- readxl::read_excel(here::here('Objects/talent_traps_OR.xlsx'))
-talent <- dat[-1,] # no site info in first row
+talent <- dat[-1,] # no site info in first row, so remove
+
+#### IGNORE COLUMN NAME MESSAGE (see below) #####
 
 talent_f <- talent[, -c(6, 9, 12)]
 
@@ -69,6 +71,7 @@ talent_f$Total <- ifelse(is.na(talent_f$Total), 0, talent_f$Total)
 talent_f <- talent_f %>%
   na.omit()
 
+# grab epidemiological week and append
 talent_f$epi_wk <- MMWRweek(talent_f$Date)$MMWRweek
 
 talent_f <- talent_f %>%
@@ -109,9 +112,9 @@ dts.nw <- c(unique(t_p_2$epi_wk))[-1]
 dts.all <- unique(t_p_1$epi_wk)
 
 t_cnct <- rbind(
-  new.fun(from = t_p_1, to = t_p_2, x = 1, y = 1),
-  new.fun(from = t_p_1, to = t_p_2, x = 2, y = 2),
-  new.fun(from = t_p_1, to = t_p_2, x = 3, y = 3),
+  new.fun(from = t_p_1, to = t_p_2, x = 1, y = 1), # week 1
+  new.fun(from = t_p_1, to = t_p_2, x = 2, y = 2), # 2
+  new.fun(from = t_p_1, to = t_p_2, x = 3, y = 3), # so on....
   new.fun(from = t_p_1, to = t_p_2, x = 4, y = 4),
   new.fun(from = t_p_1, to = t_p_2, x = 5, y = 5)
 ) %>%
@@ -120,8 +123,9 @@ t_cnct <- rbind(
 write_sf(t_cnct, here::here("Objects/Talent connectivity NA omitted.shp"))
 
 #---------
-# ashland
+# Ashland
 #---------
+
 ash <- read.csv(here::here("Objects/Ashland Traps Raw.csv")) %>%
   filter(
     F_Total != 0 # only want female collections (removes one address!)

@@ -17,6 +17,10 @@ ash <- readRDS(here::here("Objects/kinship/ash full graph.RDS")) %>%
     epi_wk = MMWRweek(To_Date)$MMWRweek,
     TopRel = ifelse(
       # a guesstimate
+      # within 13 days and kinship category is first -> full sibling
+      # between 14 and 28 days and kinship category is first -> parent offspring
+      # after 28 days and kinship category is first -> Grandparent/(grand)child (two potential generations)
+      # otherwise, irrelevant
       date_diff <= 13 & Type == "First",
       "FS",
       ifelse(
@@ -50,6 +54,7 @@ ash_di <- ash %>%
   st_drop_geometry()  %>%
   dplyr::filter(kinship != "other")
 
+# using`kindisperse` syntax 
 FS <- df_to_kinpair(ash_di, kinship = "FS")
 GP <- df_to_kinpair(ash_di, kinship = "GG")
 PO <- df_to_kinpair(ash_di, kinship = "PO")
@@ -58,7 +63,7 @@ dyad_l <- list(FS, GP, PO)
 
 relationships <- c("full", "grand", "parent")
 names(dyad_l) <- relationships
-comp <- c(2, 1, 1)
+comp <- c(2, 1, 1) # see https://doi.org/10.1111/1755-0998.13520
 
 sigma_l <- vector(mode = "list", length = length(relationships))
 names(sigma_l) <- relationships

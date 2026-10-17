@@ -23,7 +23,6 @@ source(here::here("Creating_networks.R"))
 library(StAMPP)
 library(dartR)
 
-# for plot layout (Talent only right now) ########
 or_dat_f_c <- readRDS(here::here("Objects/Talent Trap Counts.rds")) %>%
   dplyr::select(Site, Date, epi_wk, Total)
 
@@ -64,7 +63,7 @@ mydataNA = read.genepop(
   here::here("Objects/kinship/Oregon_ALL_2026_GP.gen"),
   ncode = 3L,
   quiet = FALSE
-)
+)  # first 50 are ashland; rest Talent
 
 ash_codes <- read.csv(here::here('Objects/kinship/Ashland_codes for predigree.csv')) %>%
   dplyr::mutate(Tube = paste(Tube, Sex, sep = "-")) %>%
@@ -85,22 +84,26 @@ names <- left_join(names, ash_codes, by = c("value" = "Tube")) %>%
   dplyr::select(-value)
 sites <- as.factor(names$Trap.location)
 
+# stratify by site names (since we are grouping by site....)
 strata(ash) <- names
 nameStrata(ash) <- ~ Site
 setPop(ash) <- ~ Site
 site_counts <- table(ash@pop)
 
+# convert to genlight
 ash2 <- dartR::gi2gl(ash, parallel = FALSE, verbose = NULL)
 
+# compute Fst (adjusted for sample size)
+# alpha = 0.05
 A.dist <- stamppFst(ash2, nboots = 99, percent = 95)
 A.dist2 <- A.dist[[1]]
-A.dist2[A.dist2 < 0] <- 1e-6
+A.dist2[A.dist2 < 0] <- 1e-6 # can't be negative (not meaningful); can't be zero -> make it close to 0
 A.dist2[is.nan(A.dist2)] <- NA
 
 A.dist[[1]][!lower.tri(A.dist[[1]])] <- NA
 A.dist[[1]][is.nan(A.dist[[1]])] <- NA
 A.dist[[1]][A.dist[[1]] < 0] <- 1e-6
-A.dist[[1]][A.dist[[2]] > 0.05] <- NA
+A.dist[[1]][A.dist[[2]] > 0.05] <- NA # insignificant results
 
 unique(A.dist[[1]])
 
@@ -114,6 +117,9 @@ ash_fst2 <- na.omit(melt(A.dist2, varnames = c("from", "to"), value.name = "fst"
 ash_fst2 <- ash_fst[as.character(ash_fst$from) < as.character(ash_fst$to), ]
 rownames(ash_fst2) <- 1:nrow(ash_fst2)
 
+### FIGURE 4 (Ashland) ######
+
+# panel A
 ag0 <- graph_from_data_frame(
   ash_fst,
   directed = FALSE
@@ -126,9 +132,11 @@ V(ag0)$label[12] <- "A14" # missing site in spatial data
 
 ag1 <- ag0
 
+# getting minimum spanning tree
 msn_graph <- igraph::mst(ag0)
 E(msn_graph)$color <- "#D81B60"
 
+# get the edges that are certain first degree and >= 14 days
 adding_el <- ash_sf %>%
   dplyr::select(From_site, To_site, date_diff, Type) %>%
   dplyr::mutate(date_diff = as.numeric(date_diff))
@@ -165,6 +173,7 @@ msn_df <- igraph::as_data_frame(msn_graph) %>%
     -value
   )
 
+# add edges 
 msn_graph1 <- graph_from_data_frame(rbind(msn_df, adding_el), directed = FALSE)
 V(msn_graph1)$label <- Aobfuscate$Alabel[match(V(msn_graph1)$name, Aobfuscate$Asite)]
 V(msn_graph1)$label[10] <- "A14"
@@ -181,6 +190,7 @@ lo <- matrix(c(V(msn_graph)$Long, V(msn_graph)$Lat), ncol = 2) %>%
   na.omit()
 bbox <- st_bbox(read_sf(here::here("Objects/Ashland connectivity NA omitted.shp")))
 
+# panel B
 V(msn_graph1)$Lat <- ifelse(is.na(ash_sf$From_Y[match(V(msn_graph1)$name, ash_sf$From_site)]),
                             ash_sf$To_Y[match(V(msn_graph1)$name, ash_sf$To_site)],
                             ash_sf$From_Y[match(V(msn_graph1)$name, ash_sf$From_site)])
@@ -298,6 +308,7 @@ tal_fst2 <- na.omit(melt(T.dist2, varnames = c("from", "to"), value.name = "fst"
 tal_fst2 <- tal_fst[as.character(tal_fst$from) < as.character(tal_fst$to), ]
 rownames(tal_fst2) <- 1:nrow(tal_fst2)
 
+### FIGURE 4 (Talent) ######
 tg0 <- graph_from_data_frame(
   tal_fst,
   directed = FALSE
@@ -349,6 +360,7 @@ msn_df <- igraph::as_data_frame(msn_graph) %>%
 msn_graph1 <- graph_from_data_frame(rbind(msn_df, adding_el), directed = FALSE)
 V(msn_graph1)$label <- Tobfuscate$Tlabel[match(V(msn_graph1)$name, Tobfuscate$Tsite)]
 
+# panel C
 V(msn_graph)$Lat <- ifelse(is.na(or_sf_cnct$From_Y[match(V(msn_graph)$name, or_sf_cnct$From)]),
                            or_sf_cnct$To_Y[match(V(msn_graph)$name, or_sf_cnct$To)],
                            or_sf_cnct$From_Y[match(V(msn_graph)$name, or_sf_cnct$From)])
@@ -385,6 +397,7 @@ lo <- matrix(c(V(msn_graph)$Long, V(msn_graph)$Lat), ncol = 2) %>%
   na.omit()
 bbox <- st_bbox(or_sf_cnct)
 
+# panel D
 V(msn_graph1)$Lat <- ifelse(is.na(or_sf_cnct$From_Y[match(V(msn_graph1)$name, or_sf_cnct$From)]),
                             or_sf_cnct$To_Y[match(V(msn_graph1)$name, or_sf_cnct$To)],
                             or_sf_cnct$From_Y[match(V(msn_graph1)$name, or_sf_cnct$From)])

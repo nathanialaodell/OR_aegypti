@@ -12,6 +12,7 @@ tal <- tal[!(tal$From == tal$To), ]
 
 Tobfuscate <- readRDS(here::here("Objects/Talent obfuscate.rds"))
 
+# coding convention seen in Figure 3
 tal <- tal %>%
   left_join(Tobfuscate, by = c("From" = "Tsite")) %>%
   dplyr::rename(From_label = "Tlabel") %>%
@@ -38,13 +39,19 @@ ash <- ash %>%
   left_join(Aobfuscate, by = c("To" = "Asite")) %>%
   dplyr::rename(To_label = "Alabel")
 
+# get time-ordered networks
 g_33 <- graph_wk_with_nn_fun(tal, 33)
 g_34 <- graph_wk_with_nn_fun(tal, 34)
 g_35 <- graph_wk_with_nn_fun(tal, 35)
 g_36 <- graph_wk_with_nn_fun(tal, 36)
 g_37 <- graph_wk_with_nn_fun(tal, 37)
+
+# and a static
 git_37 <- graph_wk_it_fun(tal, 37)
 
+# there are two sites that don't appear until the final week
+# they need to be added to the previous time-ordered network for figures
+# and temporal network centrality measures
 names = V(git_37)$name[27:28]
 Lats = V(git_37)$Lat[27:28]
 Longs = V(git_37)$Long[27:28]
@@ -109,11 +116,12 @@ ga_2 <- add_vertices(
   Long = Long_37
 )
 
+# for the spread analysis, it's easiest to just use the `timeordered` package syntax
 or_sf_cnct_time <- tal %>%
   mutate(
     VertexFrom = From_label,
     VertexTo = To_label,
-    TimeStart = epi_wk - 1,
+    TimeStart = epi_wk - 1, # technically epi_wk is a week ahead. Go back 1
     TimeStop = epi_wk
   ) %>%
   distinct() %>%
